@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_cubit.dart';
 import 'package:whale_staff/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:whale_staff/features/employee/presentation/screens/bonus_screen.dart';
 import 'package:whale_staff/features/employee/presentation/screens/employee_list_screen.dart';
 import 'package:whale_staff/features/leave/presentation/screens/leave_screen.dart';
 import 'package:whale_staff/features/report/presentation/screens/report_screen.dart';
@@ -23,7 +24,7 @@ class _MainShellState extends State<MainShell> {
     const EmployeeListScreen(),
     const SalaryScreen(),
     const LeaveScreen(),
-    const Center(child: Text('Bonuses')),
+    const BonusScreen(),
     const ReportScreen(),
     const SettingsScreen(),
   ];

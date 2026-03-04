@@ -13,6 +13,9 @@ import 'package:whale_staff/features/salary/domain/use_cases/calculate_salary.da
 import 'package:whale_staff/features/salary/presentation/bloc/salary_cubit.dart';
 import 'package:whale_staff/features/leave/data/repositories/leave_repository_impl.dart';
 import 'package:whale_staff/features/leave/presentation/bloc/leave_cubit.dart';
+import 'package:whale_staff/features/employee/data/repositories/bonus_repository_impl.dart';
+import 'package:whale_staff/features/employee/domain/use_cases/bonus_use_cases.dart';
+import 'package:whale_staff/features/employee/presentation/bloc/bonus_cubit.dart';
 import 'package:whale_staff/features/dashboard/presentation/screens/main_shell.dart';
 
 void main() async {
@@ -26,6 +29,7 @@ void main() async {
   final employeeRepo = EmployeeRepositoryImpl();
   final salaryRepo = SalaryRepositoryImpl();
   final leaveRepo = LeaveRepositoryImpl();
+  final bonusRepo = BonusRepositoryImpl();
 
   runApp(
     MultiBlocProvider(
@@ -41,12 +45,24 @@ void main() async {
         ),
         BlocProvider(
           create: (context) => SalaryCubit(
-            calculateSalaryUseCase: CalculateSalary(salaryRepo, employeeRepo),
+            calculateSalaryUseCase: CalculateSalary(
+              salaryRepo,
+              employeeRepo,
+              bonusRepo,
+            ),
           ),
         ),
         BlocProvider(
           create: (context) =>
               LeaveCubit(leaveRepository: leaveRepo)..loadAllLeaves(),
+        ),
+        BlocProvider(
+          create: (context) => BonusCubit(
+            addBonusUseCase: AddBonus(bonusRepo),
+            getEmployeeBonusesUseCase: GetEmployeeBonuses(bonusRepo),
+            getAllBonusesUseCase: GetAllBonuses(bonusRepo),
+            deleteBonusUseCase: DeleteBonus(bonusRepo),
+          )..loadAllBonuses(),
         ),
       ],
       child: const WhaleStaffApp(),
