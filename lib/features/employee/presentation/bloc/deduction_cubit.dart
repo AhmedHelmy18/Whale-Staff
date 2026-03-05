@@ -6,15 +6,41 @@ import 'deduction_state.dart';
 class DeductionCubit extends Cubit<DeductionState> {
   final DeductionRepository repository;
 
+  List<Deduction> _allDeductions = [];
+
   DeductionCubit(this.repository) : super(DeductionInitial());
 
   Future<void> loadDeductions() async {
     emit(DeductionLoading());
     try {
-      final deductions = await repository.getEmployeeDeductions('');
-      emit(DeductionLoaded(deductions));
+      _allDeductions = await repository.getEmployeeDeductions('');
+      emit(DeductionLoaded(_allDeductions, allDeductions: _allDeductions));
     } catch (e) {
       emit(DeductionError(e.toString()));
+    }
+  }
+
+  void searchDeductions(String query, Map<String, String> employeeNames) {
+    if (state is DeductionLoaded) {
+      if (query.isEmpty) {
+        emit(DeductionLoaded(_allDeductions, allDeductions: _allDeductions));
+      } else {
+        final filtered = _allDeductions.where((deduction) {
+          final searchLower = query.toLowerCase();
+          final employeeName = (employeeNames[deduction.employeeId] ?? '')
+              .toLowerCase();
+          return deduction.reason.toLowerCase().contains(searchLower) ||
+              employeeName.contains(searchLower) ||
+              deduction.amount.toString().contains(searchLower);
+        }).toList();
+        emit(
+          DeductionLoaded(
+            filtered,
+            allDeductions: _allDeductions,
+            searchQuery: query,
+          ),
+        );
+      }
     }
   }
 

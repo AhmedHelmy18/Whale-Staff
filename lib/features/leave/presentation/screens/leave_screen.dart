@@ -69,7 +69,7 @@ class LeaveScreen extends StatelessWidget {
 
                         final employees = employeeState is EmployeeLoaded
                             ? {
-                                for (var e in employeeState.employees)
+                                for (var e in employeeState.allEmployees)
                                   e.id: e.name,
                               }
                             : <String, String>{};

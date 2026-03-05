@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider_windows/path_provider_windows.dart';
 import 'package:whale_staff/core/theme/app_theme.dart';
@@ -25,6 +26,9 @@ import 'package:hive/hive.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  GoogleFonts.config.allowRuntimeFetching = false;
+
   if (Platform.isWindows) {
     PathProviderWindows.registerWith();
   }

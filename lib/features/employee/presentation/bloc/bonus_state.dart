@@ -13,9 +13,17 @@ class BonusLoading extends BonusState {}
 
 class BonusLoaded extends BonusState {
   final List<Bonus> bonuses;
-  const BonusLoaded(this.bonuses);
+  final List<Bonus> allBonuses;
+  final String searchQuery;
+
+  const BonusLoaded(
+    this.bonuses, {
+    this.allBonuses = const [],
+    this.searchQuery = '',
+  });
+
   @override
-  List<Object?> get props => [bonuses];
+  List<Object?> get props => [bonuses, allBonuses, searchQuery];
 }
 
 class BonusError extends BonusState {

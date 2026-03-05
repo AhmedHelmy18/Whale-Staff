@@ -15,9 +15,13 @@ class AppTheme {
       onSurface: AppColors.textPrimaryLight,
     ),
     scaffoldBackgroundColor: AppColors.backgroundLight,
-    textTheme: GoogleFonts.interTextTheme().apply(
+    textTheme: GoogleFonts.senTextTheme().apply(
       bodyColor: AppColors.textPrimaryLight,
       displayColor: AppColors.textPrimaryLight,
+    ),
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: AppColors.primary.withValues(alpha: 0.5),
+      selectionHandleColor: AppColors.primary,
     ),
     cardTheme: CardThemeData(
       color: AppColors.surfaceLight,
@@ -47,9 +51,13 @@ class AppTheme {
       onSurface: AppColors.textPrimaryDark,
     ),
     scaffoldBackgroundColor: AppColors.backgroundDark,
-    textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
+    textTheme: GoogleFonts.senTextTheme(ThemeData.dark().textTheme).apply(
       bodyColor: AppColors.textPrimaryDark,
       displayColor: AppColors.textPrimaryDark,
+    ),
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: AppColors.primaryLight.withValues(alpha: 0.5),
+      selectionHandleColor: AppColors.primaryLight,
     ),
     cardTheme: CardThemeData(
       color: AppColors.surfaceDark,
