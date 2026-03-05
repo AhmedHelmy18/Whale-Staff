@@ -1,9 +1,10 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:whale_staff/features/employee/data/models/bonus_model.dart';
 import 'package:whale_staff/features/employee/data/models/employee_model.dart';
 import 'package:whale_staff/features/leave/data/models/leave_model.dart';
 import 'package:whale_staff/features/salary/data/models/salary_model.dart';
-import 'package:whale_staff/features/employee/data/models/bonus_model.dart';
+import 'package:whale_staff/features/employee/data/models/deduction_model.dart';
 
 class HiveService {
   static Future<void> init() async {
@@ -13,5 +14,6 @@ class HiveService {
     Hive.registerAdapter(SalaryModelAdapter());
     Hive.registerAdapter(LeaveModelAdapter());
     Hive.registerAdapter(BonusModelAdapter());
+    Hive.registerAdapter(DeductionModelAdapter());
   }
 }

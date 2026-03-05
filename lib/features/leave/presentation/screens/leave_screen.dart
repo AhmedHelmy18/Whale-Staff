@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whale_staff/core/widgets/employee_dropdown_field.dart';
 import 'package:whale_staff/features/leave/presentation/bloc/leave_cubit.dart';
 import 'package:whale_staff/features/leave/presentation/bloc/leave_state.dart';
+import 'package:whale_staff/core/widgets/whale_toast.dart';
 import 'package:whale_staff/features/leave/domain/entities/leave.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_cubit.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_state.dart';
@@ -133,24 +134,38 @@ class LeaveScreen extends StatelessWidget {
                                               Icons.check_circle_outline,
                                               color: Colors.green,
                                             ),
-                                            onPressed: () => context
-                                                .read<LeaveCubit>()
-                                                .updateLeaveStatus(
-                                                  leave.id,
-                                                  LeaveStatus.approved,
-                                                ),
+                                            onPressed: () {
+                                              context
+                                                  .read<LeaveCubit>()
+                                                  .updateLeaveStatus(
+                                                    leave.id,
+                                                    LeaveStatus.approved,
+                                                  );
+                                              WhaleToast.show(
+                                                context,
+                                                'Leave request approved',
+                                                type: ToastType.success,
+                                              );
+                                            },
                                           ),
                                           IconButton(
                                             icon: const Icon(
                                               Icons.cancel_outlined,
                                               color: Colors.red,
                                             ),
-                                            onPressed: () => context
-                                                .read<LeaveCubit>()
-                                                .updateLeaveStatus(
-                                                  leave.id,
-                                                  LeaveStatus.rejected,
-                                                ),
+                                            onPressed: () {
+                                              context
+                                                  .read<LeaveCubit>()
+                                                  .updateLeaveStatus(
+                                                    leave.id,
+                                                    LeaveStatus.rejected,
+                                                  );
+                                              WhaleToast.show(
+                                                context,
+                                                'Leave request rejected',
+                                                type: ToastType.error,
+                                              );
+                                            },
                                           ),
                                         ],
                                       ],
@@ -263,8 +278,9 @@ class _LeaveDialogState extends State<_LeaveDialog> {
                       child: CustomDatePickerField(
                         label: 'Start Date',
                         selectedDate: _startDate,
-                        onDateSelected: (date) =>
-                            setState(() => _startDate = date),
+                        onDateSelected: (date) {
+                          if (date != null) setState(() => _startDate = date);
+                        },
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -272,8 +288,9 @@ class _LeaveDialogState extends State<_LeaveDialog> {
                       child: CustomDatePickerField(
                         label: 'End Date',
                         selectedDate: _endDate,
-                        onDateSelected: (date) =>
-                            setState(() => _endDate = date),
+                        onDateSelected: (date) {
+                          if (date != null) setState(() => _endDate = date);
+                        },
                         firstDate: _startDate,
                       ),
                     ),
@@ -307,6 +324,11 @@ class _LeaveDialogState extends State<_LeaveDialog> {
                 status: LeaveStatus.pending,
               );
               context.read<LeaveCubit>().applyLeave(leave);
+              WhaleToast.show(
+                context,
+                'Leave request submitted',
+                type: ToastType.success,
+              );
               Navigator.pop(context);
             }
           },

@@ -16,7 +16,12 @@ import 'package:whale_staff/features/leave/presentation/bloc/leave_cubit.dart';
 import 'package:whale_staff/features/employee/data/repositories/bonus_repository_impl.dart';
 import 'package:whale_staff/features/employee/domain/use_cases/bonus_use_cases.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/bonus_cubit.dart';
+import 'package:whale_staff/features/employee/data/repositories/deduction_repository_impl.dart';
+import 'package:whale_staff/features/employee/presentation/bloc/deduction_cubit.dart';
+import 'package:whale_staff/features/dashboard/presentation/bloc/dashboard_cubit.dart';
 import 'package:whale_staff/features/dashboard/presentation/screens/main_shell.dart';
+import 'package:whale_staff/features/employee/data/models/deduction_model.dart';
+import 'package:hive/hive.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +36,21 @@ void main() async {
   final leaveRepo = LeaveRepositoryImpl();
   final bonusRepo = BonusRepositoryImpl();
 
+  final deductionBox = await Hive.openBox<DeductionModel>('deductions');
+  final deductionRepo = DeductionRepositoryImpl(deductionBox);
+
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(
+          create: (context) => DashboardCubit(
+            employeeRepository: employeeRepo,
+            leaveRepository: leaveRepo,
+            bonusRepository: bonusRepo,
+            deductionRepository: deductionRepo,
+          )..loadDashboardData(),
+        ),
         BlocProvider(
           create: (context) => EmployeeCubit(
             getEmployeesUseCase: GetEmployees(employeeRepo),
@@ -49,6 +65,7 @@ void main() async {
               salaryRepo,
               employeeRepo,
               bonusRepo,
+              deductionRepo,
             ),
           ),
         ),
@@ -63,6 +80,9 @@ void main() async {
             getAllBonusesUseCase: GetAllBonuses(bonusRepo),
             deleteBonusUseCase: DeleteBonus(bonusRepo),
           )..loadAllBonuses(),
+        ),
+        BlocProvider(
+          create: (context) => DeductionCubit(deductionRepo)..loadDeductions(),
         ),
       ],
       child: const WhaleStaffApp(),

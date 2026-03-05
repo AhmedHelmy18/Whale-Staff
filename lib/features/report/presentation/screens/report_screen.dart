@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_cubit.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_state.dart';
+import 'package:whale_staff/features/salary/presentation/bloc/salary_cubit.dart';
 import 'package:whale_staff/features/report/data/report_service.dart';
+import 'package:whale_staff/core/widgets/whale_toast.dart';
 
 class ReportScreen extends StatelessWidget {
   const ReportScreen({super.key});
@@ -33,6 +35,11 @@ class ReportScreen extends StatelessWidget {
                   final state = context.read<EmployeeCubit>().state;
                   if (state is EmployeeLoaded) {
                     ReportService().exportEmployeesToExcel(state.employees);
+                    WhaleToast.show(
+                      context,
+                      'Employee list exported successfully',
+                      type: ToastType.success,
+                    );
                   }
                 },
               ),
@@ -40,7 +47,44 @@ class ReportScreen extends StatelessWidget {
                 title: 'Salary Report',
                 description: 'Export monthly salary details to Word',
                 icon: Icons.description,
-                onTap: () {},
+                onTap: () async {
+                  final employees = context.read<EmployeeCubit>().state;
+                  if (employees is EmployeeLoaded) {
+                    final employeeNames = {
+                      for (var emp in employees.employees) emp.id: emp.name,
+                    };
+
+                    final salaries = await context
+                        .read<SalaryCubit>()
+                        .calculateSalaryUseCase
+                        .salaryRepository
+                        .getAllSalaries();
+
+                    if (salaries.isEmpty) {
+                      if (context.mounted) {
+                        WhaleToast.show(
+                          context,
+                          'No salaries found to export. Please calculate and save some salaries first.',
+                          type: ToastType.info,
+                        );
+                      }
+                      return;
+                    }
+
+                    await ReportService().exportSalaryReportToWord(
+                      salaries,
+                      employeeNames,
+                    );
+
+                    if (context.mounted) {
+                      WhaleToast.show(
+                        context,
+                        'Salary report exported successfully',
+                        type: ToastType.success,
+                      );
+                    }
+                  }
+                },
               ),
             ],
           ),

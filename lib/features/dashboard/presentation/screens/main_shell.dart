@@ -8,6 +8,7 @@ import 'package:whale_staff/features/leave/presentation/screens/leave_screen.dar
 import 'package:whale_staff/features/report/presentation/screens/report_screen.dart';
 import 'package:whale_staff/features/salary/presentation/screens/salary_screen.dart';
 import 'package:whale_staff/features/settings/presentation/screens/settings_screen.dart';
+import 'package:whale_staff/features/employee/presentation/screens/deduction_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -25,6 +26,7 @@ class _MainShellState extends State<MainShell> {
     const SalaryScreen(),
     const LeaveScreen(),
     const BonusScreen(),
+    const DeductionScreen(),
     const ReportScreen(),
     const SettingsScreen(),
   ];
@@ -131,17 +133,23 @@ class _Sidebar extends StatelessWidget {
             onTap: () => onDestinationSelected(4),
           ),
           _SidebarItem(
-            icon: Icons.assessment_outlined,
-            label: 'Reports',
+            icon: Icons.remove_circle_outline,
+            label: 'Deductions',
             isSelected: selectedIndex == 5,
             onTap: () => onDestinationSelected(5),
+          ),
+          _SidebarItem(
+            icon: Icons.assessment_outlined,
+            label: 'Reports',
+            isSelected: selectedIndex == 6,
+            onTap: () => onDestinationSelected(6),
           ),
           const Spacer(),
           _SidebarItem(
             icon: Icons.settings_outlined,
             label: 'Settings',
-            isSelected: selectedIndex == 6,
-            onTap: () => onDestinationSelected(6),
+            isSelected: selectedIndex == 7,
+            onTap: () => onDestinationSelected(7),
           ),
           const SizedBox(height: 20),
         ],

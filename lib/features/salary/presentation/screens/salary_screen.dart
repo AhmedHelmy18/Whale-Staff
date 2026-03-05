@@ -4,6 +4,7 @@ import 'package:whale_staff/features/employee/presentation/bloc/employee_cubit.d
 import 'package:whale_staff/features/employee/presentation/bloc/employee_state.dart';
 import 'package:whale_staff/features/salary/presentation/bloc/salary_cubit.dart';
 import 'package:whale_staff/features/salary/presentation/bloc/salary_state.dart';
+import 'package:whale_staff/core/widgets/whale_toast.dart';
 
 class SalaryScreen extends StatelessWidget {
   const SalaryScreen({super.key});
@@ -138,7 +139,14 @@ class _SalaryDetailsPanel extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<SalaryCubit>().saveSalary(salary);
+                      WhaleToast.show(
+                        context,
+                        'Salary saved successfully',
+                        type: ToastType.success,
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.all(20),
                       shape: RoundedRectangleBorder(

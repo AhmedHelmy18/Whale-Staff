@@ -3,16 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:whale_staff/core/widgets/employee_dropdown_field.dart';
 import 'package:whale_staff/features/employee/domain/entities/employee.dart';
-import 'package:whale_staff/features/employee/domain/entities/bonus.dart';
+import 'package:whale_staff/features/employee/domain/entities/deduction.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_cubit.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_state.dart';
 import 'package:whale_staff/core/widgets/whale_toast.dart';
-import 'package:whale_staff/features/employee/presentation/bloc/bonus_cubit.dart';
-import 'package:whale_staff/features/employee/presentation/bloc/bonus_state.dart';
+import 'package:whale_staff/features/employee/presentation/bloc/deduction_cubit.dart';
+import 'package:whale_staff/features/employee/presentation/bloc/deduction_state.dart';
 import 'package:whale_staff/core/widgets/custom_date_picker_field.dart';
 
-class BonusScreen extends StatelessWidget {
-  const BonusScreen({super.key});
+class DeductionScreen extends StatelessWidget {
+  const DeductionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +25,15 @@ class BonusScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Bonus Management',
+                'Deduction Management',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               ElevatedButton.icon(
-                onPressed: () => _showAddBonusDialog(context),
+                onPressed: () => _showAddDeductionDialog(context),
                 icon: const Icon(Icons.add),
-                label: const Text('Add Bonus'),
+                label: const Text('Add Deduction'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -55,15 +55,15 @@ class BonusScreen extends StatelessWidget {
               ),
               child: BlocBuilder<EmployeeCubit, EmployeeState>(
                 builder: (context, employeeState) {
-                  return BlocBuilder<BonusCubit, BonusState>(
+                  return BlocBuilder<DeductionCubit, DeductionState>(
                     builder: (context, state) {
-                      if (state is BonusLoading) {
+                      if (state is DeductionLoading) {
                         return const Center(child: CircularProgressIndicator());
                       }
-                      if (state is BonusLoaded) {
-                        if (state.bonuses.isEmpty) {
+                      if (state is DeductionLoaded) {
+                        if (state.deductions.isEmpty) {
                           return const Center(
-                            child: Text('No manual bonuses found.'),
+                            child: Text('No manual deductions found.'),
                           );
                         }
 
@@ -84,27 +84,27 @@ class BonusScreen extends StatelessWidget {
                               DataColumn(label: Text('Date')),
                               DataColumn(label: Text('Actions')),
                             ],
-                            rows: state.bonuses.map((bonus) {
+                            rows: state.deductions.map((deduction) {
                               final employeeName =
-                                  employees[bonus.employeeId] ?? 'Unknown';
+                                  employees[deduction.employeeId] ?? 'Unknown';
                               return DataRow(
                                 cells: [
                                   DataCell(Text(employeeName)),
                                   DataCell(
                                     Text(
-                                      '\$${bonus.amount.toStringAsFixed(2)}',
+                                      '-\$${deduction.amount.toStringAsFixed(2)}',
                                       style: const TextStyle(
-                                        color: Colors.green,
+                                        color: Colors.red,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  DataCell(Text(bonus.reason)),
+                                  DataCell(Text(deduction.reason)),
                                   DataCell(
                                     Text(
                                       DateFormat(
                                         'yyyy-MM-dd',
-                                      ).format(bonus.date),
+                                      ).format(deduction.date),
                                     ),
                                   ),
                                   DataCell(
@@ -114,8 +114,8 @@ class BonusScreen extends StatelessWidget {
                                         color: Colors.red,
                                       ),
                                       onPressed: () => context
-                                          .read<BonusCubit>()
-                                          .removeBonus(bonus.id),
+                                          .read<DeductionCubit>()
+                                          .removeDeduction(deduction.id),
                                     ),
                                   ),
                                 ],
@@ -136,28 +136,28 @@ class BonusScreen extends StatelessWidget {
     );
   }
 
-  void _showAddBonusDialog(BuildContext context) {
+  void _showAddDeductionDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (diagContext) => MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: context.read<BonusCubit>()),
+          BlocProvider.value(value: context.read<DeductionCubit>()),
           BlocProvider.value(value: context.read<EmployeeCubit>()),
         ],
-        child: const _AddBonusDialog(),
+        child: const _AddDeductionDialog(),
       ),
     );
   }
 }
 
-class _AddBonusDialog extends StatefulWidget {
-  const _AddBonusDialog();
+class _AddDeductionDialog extends StatefulWidget {
+  const _AddDeductionDialog();
 
   @override
-  State<_AddBonusDialog> createState() => _AddBonusDialogState();
+  State<_AddDeductionDialog> createState() => _AddDeductionDialogState();
 }
 
-class _AddBonusDialogState extends State<_AddBonusDialog> {
+class _AddDeductionDialogState extends State<_AddDeductionDialog> {
   final _formKey = GlobalKey<FormState>();
   String? _selectedEmployeeId;
   final _amountController = TextEditingController();
@@ -167,7 +167,7 @@ class _AddBonusDialogState extends State<_AddBonusDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Employee Bonus'),
+      title: const Text('Add Employee Deduction'),
       content: SingleChildScrollView(
         child: SizedBox(
           width: 400,
@@ -205,8 +205,8 @@ class _AddBonusDialogState extends State<_AddBonusDialog> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _amountController,
-                  decoration: InputDecoration(
-                    labelText: 'Bonus Amount (\$)',
+                  decoration: const InputDecoration(
+                    labelText: 'Deduction Amount (\$)',
                     prefixText: '\$ ',
                   ),
                   keyboardType: TextInputType.number,
@@ -224,7 +224,7 @@ class _AddBonusDialogState extends State<_AddBonusDialog> {
                 ),
                 const SizedBox(height: 16),
                 CustomDatePickerField(
-                  label: 'Bonus Date',
+                  label: 'Deduction Date',
                   selectedDate: _selectedDate,
                   onDateSelected: (date) {
                     if (date != null) setState(() => _selectedDate = date);
@@ -244,23 +244,23 @@ class _AddBonusDialogState extends State<_AddBonusDialog> {
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              final bonus = Bonus(
+              final deduction = Deduction(
                 id: DateTime.now().millisecondsSinceEpoch.toString(),
                 employeeId: _selectedEmployeeId!,
                 amount: double.parse(_amountController.text),
                 reason: _reasonController.text,
                 date: _selectedDate,
               );
-              context.read<BonusCubit>().addBonus(bonus);
+              context.read<DeductionCubit>().addDeduction(deduction);
               WhaleToast.show(
                 context,
-                'Bonus added successfully',
+                'Deduction added successfully',
                 type: ToastType.success,
               );
               Navigator.pop(context);
             }
           },
-          child: const Text('Add Bonus'),
+          child: const Text('Add Deduction'),
         ),
       ],
     );

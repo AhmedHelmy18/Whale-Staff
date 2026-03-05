@@ -13,6 +13,12 @@ class SalaryRepositoryImpl implements SalaryRepository {
   }
 
   @override
+  Future<List<Salary>> getAllSalaries() async {
+    final box = await Hive.openBox<SalaryModel>(boxName);
+    return box.values.toList();
+  }
+
+  @override
   Future<void> saveSalary(Salary salary) async {
     final box = await Hive.openBox<SalaryModel>(boxName);
     await box.put(salary.id, SalaryModel.fromEntity(salary));

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whale_staff/features/employee/domain/entities/employee.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_cubit.dart';
 import 'package:whale_staff/features/employee/presentation/bloc/employee_state.dart';
+import 'package:whale_staff/core/widgets/whale_toast.dart';
+import 'package:whale_staff/core/widgets/custom_date_picker_field.dart';
 
 class EmployeeListScreen extends StatelessWidget {
   const EmployeeListScreen({super.key});
@@ -162,6 +164,7 @@ class _EmployeeDialogState extends State<_EmployeeDialog> {
   late TextEditingController _phoneController;
   late TextEditingController _positionController;
   late TextEditingController _salaryController;
+  DateTime? _birthday;
 
   @override
   void initState() {
@@ -179,6 +182,7 @@ class _EmployeeDialogState extends State<_EmployeeDialog> {
     _salaryController = TextEditingController(
       text: widget.employee?.baseSalary.toString() ?? '',
     );
+    _birthday = widget.employee?.birthday;
   }
 
   @override
@@ -189,47 +193,56 @@ class _EmployeeDialogState extends State<_EmployeeDialog> {
         width: 500,
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(labelText: 'Email'),
-                      validator: (value) => value!.isEmpty ? 'Required' : null,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(labelText: 'Name'),
+                  validator: (value) => value!.isEmpty ? 'Required' : null,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        validator: (value) =>
+                            value!.isEmpty ? 'Required' : null,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _phoneController,
-                      decoration: const InputDecoration(labelText: 'Phone'),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _phoneController,
+                        decoration: const InputDecoration(labelText: 'Phone'),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _positionController,
-                decoration: const InputDecoration(labelText: 'Position'),
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _salaryController,
-                decoration: const InputDecoration(labelText: 'Base Salary'),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    double.tryParse(value!) == null ? 'Invalid number' : null,
-              ),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _positionController,
+                  decoration: const InputDecoration(labelText: 'Position'),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _salaryController,
+                  decoration: const InputDecoration(labelText: 'Base Salary'),
+                  keyboardType: TextInputType.number,
+                  validator: (value) =>
+                      double.tryParse(value!) == null ? 'Invalid number' : null,
+                ),
+                const SizedBox(height: 24),
+                CustomDatePickerField(
+                  label: 'Birthday (Optional)',
+                  selectedDate: _birthday,
+                  onDateSelected: (date) => setState(() => _birthday = date),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -251,9 +264,15 @@ class _EmployeeDialogState extends State<_EmployeeDialog> {
                 position: _positionController.text,
                 baseSalary: double.parse(_salaryController.text),
                 hireDate: widget.employee?.hireDate ?? DateTime.now(),
+                birthday: _birthday,
                 bonusPercentage: widget.employee?.bonusPercentage ?? 0.0,
               );
               widget.onSave(newEmployee);
+              WhaleToast.show(
+                context,
+                'Employee ${widget.employee == null ? 'added' : 'updated'} successfully',
+                type: ToastType.success,
+              );
               Navigator.pop(context);
             }
           },

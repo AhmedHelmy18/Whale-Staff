@@ -4,18 +4,20 @@ import 'package:whale_staff/core/constants/app_colors.dart';
 
 class CustomDatePickerField extends StatelessWidget {
   final String label;
-  final DateTime selectedDate;
-  final ValueChanged<DateTime> onDateSelected;
+  final DateTime? selectedDate;
+  final ValueChanged<DateTime?> onDateSelected;
   final DateTime? firstDate;
   final DateTime? lastDate;
+  final String? placeholder;
 
   const CustomDatePickerField({
     super.key,
     required this.label,
-    required this.selectedDate,
+    this.selectedDate,
     required this.onDateSelected,
     this.firstDate,
     this.lastDate,
+    this.placeholder,
   });
 
   @override
@@ -32,10 +34,8 @@ class CustomDatePickerField extends StatelessWidget {
           onTap: () async {
             final date = await showDatePicker(
               context: context,
-              initialDate: selectedDate,
-              firstDate:
-                  firstDate ??
-                  DateTime.now().subtract(const Duration(days: 365)),
+              initialDate: selectedDate ?? DateTime.now(),
+              firstDate: firstDate ?? DateTime(1900),
               lastDate:
                   lastDate ?? DateTime.now().add(const Duration(days: 365)),
               builder: (context, child) {
@@ -103,8 +103,13 @@ class CustomDatePickerField extends StatelessWidget {
               height: 50,
               alignment: Alignment.centerLeft,
               child: Text(
-                DateFormat('yyyy-MM-dd').format(selectedDate),
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+                selectedDate != null
+                    ? DateFormat('yyyy-MM-dd').format(selectedDate!)
+                    : (placeholder ?? 'Select date'),
+                style: TextStyle(
+                  color: selectedDate != null ? Colors.white : Colors.white38,
+                  fontSize: 14,
+                ),
               ),
             ),
           ),
