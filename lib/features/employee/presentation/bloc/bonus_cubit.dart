@@ -9,6 +9,8 @@ class BonusCubit extends Cubit<BonusState> {
   final GetAllBonuses getAllBonusesUseCase;
   final DeleteBonus deleteBonusUseCase;
 
+  List<Bonus> _allBonuses = [];
+
   BonusCubit({
     required this.addBonusUseCase,
     required this.getEmployeeBonusesUseCase,
@@ -19,10 +21,30 @@ class BonusCubit extends Cubit<BonusState> {
   Future<void> loadAllBonuses() async {
     emit(BonusLoading());
     try {
-      final bonuses = await getAllBonusesUseCase();
-      emit(BonusLoaded(bonuses));
+      _allBonuses = await getAllBonusesUseCase();
+      emit(BonusLoaded(_allBonuses, allBonuses: _allBonuses));
     } catch (e) {
       emit(BonusError(e.toString()));
+    }
+  }
+
+  void searchBonuses(String query, Map<String, String> employeeNames) {
+    if (state is BonusLoaded) {
+      if (query.isEmpty) {
+        emit(BonusLoaded(_allBonuses, allBonuses: _allBonuses));
+      } else {
+        final filtered = _allBonuses.where((bonus) {
+          final searchLower = query.toLowerCase();
+          final employeeName = (employeeNames[bonus.employeeId] ?? '')
+              .toLowerCase();
+          return bonus.reason.toLowerCase().contains(searchLower) ||
+              employeeName.contains(searchLower) ||
+              bonus.amount.toString().contains(searchLower);
+        }).toList();
+        emit(
+          BonusLoaded(filtered, allBonuses: _allBonuses, searchQuery: query),
+        );
+      }
     }
   }
 

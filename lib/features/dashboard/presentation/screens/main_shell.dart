@@ -9,6 +9,10 @@ import 'package:whale_staff/features/report/presentation/screens/report_screen.d
 import 'package:whale_staff/features/salary/presentation/screens/salary_screen.dart';
 import 'package:whale_staff/features/settings/presentation/screens/settings_screen.dart';
 import 'package:whale_staff/features/employee/presentation/screens/deduction_screen.dart';
+import 'package:whale_staff/features/employee/presentation/bloc/employee_state.dart';
+import 'package:whale_staff/features/employee/presentation/bloc/bonus_cubit.dart';
+import 'package:whale_staff/features/employee/presentation/bloc/deduction_cubit.dart';
+import 'package:whale_staff/features/leave/presentation/bloc/leave_cubit.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -49,7 +53,20 @@ class _MainShellState extends State<MainShell> {
               children: [
                 _TopBar(
                   onSearch: (query) {
-                    context.read<EmployeeCubit>().searchEmployees(query);
+                    final employeeCubit = context.read<EmployeeCubit>();
+                    employeeCubit.searchEmployees(query);
+                    final employeeState = employeeCubit.state;
+                    if (employeeState is EmployeeLoaded) {
+                      final names = {
+                        for (var e in employeeState.allEmployees) e.id: e.name,
+                      };
+                      context.read<BonusCubit>().searchBonuses(query, names);
+                      context.read<DeductionCubit>().searchDeductions(
+                        query,
+                        names,
+                      );
+                      context.read<LeaveCubit>().searchLeaves(query, names);
+                    }
                   },
                 ),
                 Expanded(
@@ -89,7 +106,11 @@ class _Sidebar extends StatelessWidget {
             padding: const EdgeInsets.all(20.0),
             child: Row(
               children: [
-                Icon(Icons.waves, color: theme.colorScheme.primary, size: 32),
+                Image.asset(
+                  'assets/images/whale_logo.png',
+                  width: 38,
+                  height: 38,
+                ),
                 const SizedBox(width: 12),
                 Text(
                   'WHALE STAFF',

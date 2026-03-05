@@ -13,15 +13,19 @@ class EmployeeLoading extends EmployeeState {}
 
 class EmployeeLoaded extends EmployeeState {
   final List<Employee> employees;
+  final List<Employee> allEmployees;
   final String? _searchQuery;
 
   String get searchQuery => _searchQuery ?? '';
 
-  const EmployeeLoaded(this.employees, {String searchQuery = ''})
-    : _searchQuery = searchQuery;
+  const EmployeeLoaded(
+    this.employees, {
+    this.allEmployees = const [],
+    String searchQuery = '',
+  }) : _searchQuery = searchQuery;
 
   @override
-  List<Object?> get props => [employees, searchQuery];
+  List<Object?> get props => [employees, allEmployees, searchQuery];
 }
 
 class EmployeeError extends EmployeeState {

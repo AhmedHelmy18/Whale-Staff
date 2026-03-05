@@ -14,11 +14,17 @@ class DeductionLoading extends DeductionState {}
 
 class DeductionLoaded extends DeductionState {
   final List<Deduction> deductions;
+  final List<Deduction> allDeductions;
+  final String searchQuery;
 
-  const DeductionLoaded(this.deductions);
+  const DeductionLoaded(
+    this.deductions, {
+    this.allDeductions = const [],
+    this.searchQuery = '',
+  });
 
   @override
-  List<Object?> get props => [deductions];
+  List<Object?> get props => [deductions, allDeductions, searchQuery];
 }
 
 class DeductionError extends DeductionState {

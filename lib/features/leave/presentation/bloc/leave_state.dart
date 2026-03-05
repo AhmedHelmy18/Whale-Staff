@@ -13,9 +13,17 @@ class LeaveLoading extends LeaveState {}
 
 class LeaveLoaded extends LeaveState {
   final List<Leave> leaves;
-  const LeaveLoaded(this.leaves);
+  final List<Leave> allLeaves;
+  final String searchQuery;
+
+  const LeaveLoaded(
+    this.leaves, {
+    this.allLeaves = const [],
+    this.searchQuery = '',
+  });
+
   @override
-  List<Object?> get props => [leaves];
+  List<Object?> get props => [leaves, allLeaves, searchQuery];
 }
 
 class LeaveError extends LeaveState {

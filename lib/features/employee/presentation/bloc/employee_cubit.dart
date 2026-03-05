@@ -22,7 +22,7 @@ class EmployeeCubit extends Cubit<EmployeeState> {
     emit(EmployeeLoading());
     try {
       _allEmployees = await getEmployeesUseCase();
-      emit(EmployeeLoaded(_allEmployees));
+      emit(EmployeeLoaded(_allEmployees, allEmployees: _allEmployees));
     } catch (e) {
       emit(EmployeeError(e.toString()));
     }
@@ -31,7 +31,7 @@ class EmployeeCubit extends Cubit<EmployeeState> {
   void searchEmployees(String query) {
     if (state is EmployeeLoaded) {
       if (query.isEmpty) {
-        emit(EmployeeLoaded(_allEmployees));
+        emit(EmployeeLoaded(_allEmployees, allEmployees: _allEmployees));
       } else {
         final filtered = _allEmployees.where((employee) {
           final searchLower = query.toLowerCase();
@@ -39,7 +39,13 @@ class EmployeeCubit extends Cubit<EmployeeState> {
               employee.email.toLowerCase().contains(searchLower) ||
               employee.position.toLowerCase().contains(searchLower);
         }).toList();
-        emit(EmployeeLoaded(filtered, searchQuery: query));
+        emit(
+          EmployeeLoaded(
+            filtered,
+            allEmployees: _allEmployees,
+            searchQuery: query,
+          ),
+        );
       }
     }
   }
