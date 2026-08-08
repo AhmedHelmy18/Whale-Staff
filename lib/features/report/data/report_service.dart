@@ -41,10 +41,6 @@ class ReportService {
     List<Salary> salaries,
     Map<String, String> employeeNames,
   ) async {
-    // For simplicity in this demo, let's create a professional Excel report since docx_template
-    // requires a pre-existing .docx template file which we don't have.
-    // Excel is often preferred for salary lists anyway.
-
     var excel = Excel.createExcel();
     Sheet sheetObject = excel['Payroll Report'];
 

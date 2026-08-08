@@ -34,7 +34,6 @@ void main() async {
   }
   await HiveService.init();
 
-  // Repositories
   final employeeRepo = EmployeeRepositoryImpl();
   final salaryRepo = SalaryRepositoryImpl();
   final leaveRepo = LeaveRepositoryImpl();

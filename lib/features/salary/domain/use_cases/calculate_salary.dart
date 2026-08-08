@@ -39,7 +39,6 @@ class CalculateSalary {
       (sum, d) => sum + d.amount,
     );
 
-    // Business Logic for Salary Calculation
     double bonusAmount =
         (employee.baseSalary * employee.bonusPercentage / 100) +
         totalManualBonus +

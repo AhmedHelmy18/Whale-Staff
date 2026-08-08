@@ -17,7 +17,7 @@ class SalaryCubit extends Cubit<SalaryState> {
       final salary = await calculateSalaryUseCase(
         employeeId,
         extraBonus: bonus,
-        shouldSave: false, // Don't save yet, wait for confirmation
+        shouldSave: false,
       );
       emit(SalaryCalculated(salary));
     } catch (e) {
@@ -28,7 +28,6 @@ class SalaryCubit extends Cubit<SalaryState> {
   Future<void> saveSalary(Salary salary) async {
     try {
       await calculateSalaryUseCase.salaryRepository.saveSalary(salary);
-      // We could emit a "Saved" state or just keep the current state
     } catch (e) {
       emit(SalaryError(e.toString()));
     }
