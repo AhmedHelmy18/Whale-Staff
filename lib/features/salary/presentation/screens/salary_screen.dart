@@ -57,11 +57,10 @@ class SalaryScreen extends StatelessWidget {
 class _EmployeeSalaryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-      ),
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      borderRadius: BorderRadius.circular(16),
+      clipBehavior: Clip.antiAlias,
       child: BlocBuilder<EmployeeCubit, EmployeeState>(
         builder: (context, state) {
           if (state is EmployeeLoaded) {
