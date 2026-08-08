@@ -1,4 +1,3 @@
-// ignore_for_file: overridden_fields
 import 'package:hive/hive.dart';
 import 'package:whale_staff/features/leave/domain/entities/leave.dart';
 

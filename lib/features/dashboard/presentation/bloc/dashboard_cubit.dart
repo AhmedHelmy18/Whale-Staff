@@ -26,10 +26,8 @@ class DashboardCubit extends Cubit<DashboardState> {
       final allBonuses = await bonusRepository.getEmployeeBonuses('');
       final allDeductions = await deductionRepository.getEmployeeDeductions('');
 
-      // Calculate Total Employees
       final totalEmployees = employees.length;
 
-      // Calculate Active Leaves Today
       final today = DateTime.now();
       final activeLeavesToday = allLeaves.where((leave) {
         return (leave.startDate.isBefore(today) ||
@@ -38,7 +36,6 @@ class DashboardCubit extends Cubit<DashboardState> {
                 leave.endDate.isAtSameMomentAs(today));
       }).length;
 
-      // Calculate Total Monthly Payroll
       double totalBaseSalary = 0;
       for (var emp in employees) {
         totalBaseSalary += emp.baseSalary;
@@ -62,7 +59,6 @@ class DashboardCubit extends Cubit<DashboardState> {
       final totalMonthlyPayroll =
           totalBaseSalary + totalBonuses - totalDeductions;
 
-      // Calculate Upcoming Birthdays (within next 30 days)
       final normalizedToday = DateTime(today.year, today.month, today.day);
       final upcomingBirthdays = employees.where((emp) {
         if (emp.birthday == null) return false;
@@ -78,7 +74,6 @@ class DashboardCubit extends Cubit<DashboardState> {
         return diff >= 0 && diff <= 30;
       }).toList();
 
-      // Calculate Salary Distribution by Position
       final Map<String, double> salaryByPosition = {};
       for (var emp in employees) {
         salaryByPosition[emp.position] =
