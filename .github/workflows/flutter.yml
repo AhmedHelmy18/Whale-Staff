@@ -1,0 +1,33 @@
+name: Whale Staff CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+
+  push:
+    branches: [main]
+
+jobs:
+  analysis:
+    name: Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Flutter Analyzer
+        run: flutter analyze
